@@ -49,8 +49,8 @@ function Home() {
     setErro('');
   }
 
-  async function handleDelete(id) {
-    if (window.confirm('Excluir mensagem?')) {
+  async function handleDelete(id, name) {
+    if (window.confirm(`Excluir mensagem de ${name}?`)) {
       setErro('carregando...');
       await axios.delete(`${dynamoURL}/${id}`);
       handleRepositories();
@@ -90,11 +90,11 @@ function Home() {
         <S.ListItem>
           { repository.name }: { repository.message }
 
-          <S.ListButton className="btnList" key={repository.date} onClick={() => handleDelete(repository.date)}>
+          <S.ListButton key={'D'+repository.date} className="btnList" onClick={() => handleDelete(repository.date, repository.name)}>
             excluir
           </S.ListButton>
 
-          <S.ListButton key={repository.date} className="btnList" onClick={() => handleUpdate(repository.date, repository.name, repository.message)}>
+          <S.ListButton key={'U'+repository.date} className="btnList" onClick={() => handleUpdate(repository.date, repository.name, repository.message)}>
             alterar
           </S.ListButton>
         </S.ListItem>)}

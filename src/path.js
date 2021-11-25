@@ -1,4 +1,4 @@
 // YOUR AWS API URL HERE
-//const dynamoURL = '';
+const dynamoURL = '';
 
 export default dynamoURL;
