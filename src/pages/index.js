@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import * as S from './styled';
 import dynamoURL from '../path';
+import Repositories from './repositories';
+import Content from './content';
 
-function Home() {
-
+const Home = () => {
   const [ update, setUpdate ] = useState(false);
-  const [ erro, setErro ] = useState('carregando...');
+  const [ erro, setErro ] = useState(dynamoURL === '' ? '' : 'carregando...');
   const [ nameSend, setName ] = useState('');
   const [ messageSend, setMessage ] = useState('');
   const [ id, setId ] = useState('');
   const [ repositories, setRepositories ] = useState([]);
+  const [ txtButton, setTxtButton ] = useState('Enviar');
+  const [ txtLabel, setTxtLabel ] = useState('Messages App');
 
   async function handleSend() {
     setErro('carregando...');
@@ -32,21 +35,24 @@ function Home() {
   }, []);
   
   async function handleRepositories() {
-    await axios.get(dynamoURL)
-      .then(response => {
-       setRepositories(response.data['Items']);
-      })
-      .catch(err => {
-        setErro(err);
-      });
+    if (dynamoURL !== '') {
+      await axios.get(dynamoURL)
+        .then(response => {
+        setRepositories(response.data['Items']);
+        })
+        .catch(err => {
+          setErro(err);
+        });
 
-    document.getElementById('btnSend').innerText = 'Enviar';
-    document.getElementById('lblMessage').innerText = 'Messages App';
+      
+      setTxtButton('Enviar');
+      setTxtLabel('Messages App');
 
-    setId('');
-    setName('');
-    setMessage('');
-    setErro('');
+      setId('');
+      setName('');
+      setMessage('');
+      setErro('');
+    }
   }
 
   async function handleDelete(id, name) {
@@ -63,43 +69,33 @@ function Home() {
     setMessage(message);
     setUpdate(true);
     
-    document.getElementById('btnSend').innerText = 'Atualizar';
-    document.getElementById('lblMessage').innerText = 'Atualizar Mensagem';
+    setTxtButton('Atualizar');
+    setTxtLabel('Atualizar Mensagem');
   }
 
-  function KeyTest(e) {
+  const KeyTest = (e) => {
     if (e === 'Enter') { handleSend() }
   }
 
   return (
     <S.HomeContainer>
-      <S.Title id='lblMessage'>Messages App</S.Title>
-      <S.Content>
-        <S.Input className="usuarioInput" id="txtName" placeholder="Nome" value={nameSend} onChange={e => setName(e.target.value)} />
-        <S.Input className="usuarioInput" id="txtMessage" value={messageSend} placeholder="Mensagem" onKeyPress={e => KeyTest(e.code)} onChange={e => setMessage(e.target.value)} />
-        <S.Button type="button" id="btnSend" onClick={handleSend}>Enviar</S.Button>
-      </S.Content>
+      {dynamoURL === '' ? <S.Title id='lblMessage'>Defina a URL da base de dados</S.Title> :
+      <Content label={txtLabel}
+               button={txtButton}
+               handleSend={handleSend}
+               messageSend={messageSend}
+               nameSend={nameSend}
+               changeName={e => setName(e.target.value)}
+               changeMessage={e => setMessage(e.target.value)}
+               keypress={e => KeyTest(e.code)} />}
+      
       {/* erro != '' ? <S.ErrorMsg>Ocorreu um erro. Tente novamente.</S.ErrorMsg> : '' } */}
       <S.ErrorMsg id="loading">{erro}</S.ErrorMsg>
 
       <br />
       {/* --------------------------------------------------------------------------------------- */}
 
-      <S.List>
-        { repositories.map(repository => 
-        <S.ListItem>
-          { repository.name }: { repository.message }
-
-          <S.ListButton key={'D'+repository.date} className="btnList" onClick={() => handleDelete(repository.date, repository.name)}>
-            excluir
-          </S.ListButton>
-
-          <S.ListButton key={'U'+repository.date} className="btnList" onClick={() => handleUpdate(repository.date, repository.name, repository.message)}>
-            alterar
-          </S.ListButton>
-        </S.ListItem>)}
-      </S.List>
-    
+      <Repositories list={repositories} fnDel={handleDelete} fnUpdate={handleUpdate} />
     </S.HomeContainer>
   );
 }

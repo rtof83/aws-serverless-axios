@@ -22,4 +22,4 @@ message - string
 
 ### References (to build App, API Gateways, DynamoDB and Lambda): [ramoshtgamagit](https://github.com/ramosht/gamagit) / [gulikholmatova/serverless-app](https://github.com/gulikholmatova/serverless-app)
 
-![alt tag](https://hermes.digitalinnovation.one/site/images/logo-footer.png)
+![alt tag](https://hermes.digitalinnovation.one/assets/diome/logo.png)
