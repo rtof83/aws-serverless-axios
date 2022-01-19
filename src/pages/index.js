@@ -3,7 +3,8 @@ import axios from 'axios';
 import * as S from './styled';
 import dynamoURL from '../path';
 import Repositories from './repositories';
-import Content from './content';
+import Button from '../components/button';
+import Input from '../components/input';
 
 const Home = () => {
   const [ update, setUpdate ] = useState(false);
@@ -13,21 +14,24 @@ const Home = () => {
   const [ id, setId ] = useState('');
   const [ repositories, setRepositories ] = useState([]);
   const [ txtButton, setTxtButton ] = useState('Enviar');
-  const [ txtLabel, setTxtLabel ] = useState('Messages App');
 
   async function handleSend() {
-    setErro('carregando...');
+    if (nameSend !== '' && messageSend !== '') {
+      setErro('carregando...');
 
-    if (update) {
-      await axios.post(`${dynamoURL}/${id}`,
-      { name: nameSend, message: messageSend });
-      setUpdate(false);
+      if (update) {
+        await axios.post(`${dynamoURL}/${id}`,
+        { name: nameSend, message: messageSend });
+        setUpdate(false);
+      } else {
+        await axios.put(dynamoURL,
+        { date: Date.now().toString(), name: nameSend, message: messageSend });
+      }
+
+      handleRepositories();
     } else {
-      await axios.put(dynamoURL,
-      { date: Date.now().toString(), name: nameSend, message: messageSend });
+      alert('Atenção! Os campos Nome e Mensagem devem ser preenchidos!');
     }
-
-    handleRepositories();
   }
 
   useEffect(() => {
@@ -44,10 +48,7 @@ const Home = () => {
           setErro(err);
         });
 
-      
       setTxtButton('Enviar');
-      setTxtLabel('Messages App');
-
       setId('');
       setName('');
       setMessage('');
@@ -63,41 +64,69 @@ const Home = () => {
     }
   }
 
-  async function handleUpdate(id, name, message) {
+  const handleUpdate = (id, name, message, update, button) => {
     setId(id);
     setName(name);
     setMessage(message);
-    setUpdate(true);
-    
-    setTxtButton('Atualizar');
-    setTxtLabel('Atualizar Mensagem');
+    setUpdate(update);
+    setTxtButton(button);
   }
 
-  const KeyTest = (e) => {
+  const keyPress = (e) => {
     if (e === 'Enter') { handleSend() }
   }
 
-  return (
-    <S.HomeContainer>
-      {dynamoURL === '' ? <S.Title id='lblMessage'>Defina a URL da base de dados</S.Title> :
-      <Content label={txtLabel}
-               button={txtButton}
-               handleSend={handleSend}
-               messageSend={messageSend}
-               nameSend={nameSend}
-               changeName={e => setName(e.target.value)}
-               changeMessage={e => setMessage(e.target.value)}
-               keypress={e => KeyTest(e.code)} />}
-      
-      {/* erro != '' ? <S.ErrorMsg>Ocorreu um erro. Tente novamente.</S.ErrorMsg> : '' } */}
-      <S.ErrorMsg id="loading">{erro}</S.ErrorMsg>
+  if (dynamoURL === '') {
+    return <S.URL id='lblMessage'>Defina a URL da base de dados</S.URL>  
+  } else {
+    return (
+      <S.HomeContainer>
+        <S.Title id='lblMessage'>Messages App</S.Title>
+        <S.Content>
+          <Input id={'txtName'}
+                 placeholder={'Nome'}
+                 value={nameSend}
+                 keypress={keyPress}
+                 change={setName}
+          />
 
-      <br />
-      {/* --------------------------------------------------------------------------------------- */}
+          <Input id={'txtMessage'}
+                 placeholder={'Mensagem'}
+                 value={messageSend}
+                 keypress={keyPress}
+                 change={setMessage}
+          />
 
-      <Repositories list={repositories} fnDel={handleDelete} fnUpdate={handleUpdate} />
-    </S.HomeContainer>
-  );
+          <Button key={'send'}
+                  id={'btnSend'}
+                  fn={handleSend}>
+
+              {txtButton}
+          </Button>
+
+          { update ? <Button key={'cancel'}
+                             id={'btnCancel'}
+                             fn={() => handleUpdate('', '', '', false, 'Enviar')}>
+
+                          {'Cancelar'}
+                      </Button> 
+            : null }
+
+        </S.Content>
+        {/* erro != '' ? <S.ErrorMsg>Ocorreu um erro. Tente novamente.</S.ErrorMsg> : '' } */}
+        <S.ErrorMsg id="loading">{erro}</S.ErrorMsg>
+
+        <br />
+        {/* --------------------------------------------------------------------------------------- */}
+
+        <Repositories disabled={update}
+                      list={repositories}
+                      fnDel={handleDelete}
+                      fnUpdate={handleUpdate}
+        />
+      </S.HomeContainer>
+    )
+  }
 }
 
 export default Home;

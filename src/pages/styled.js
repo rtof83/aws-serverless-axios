@@ -1,5 +1,18 @@
 import styled from 'styled-components';
 
+export const URL = styled.div`
+  font-size: 1.5rem;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-align: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #D3D3D3;
+`
+
 export const Title = styled.h1`
   height: 4vh;
   font-size: 1.5rem;
@@ -44,6 +57,7 @@ export const Button = styled.button`
   background: #000;
   color: #fff;
   border-radius: .25rem 0;
+  margin-right: .25rem;
 
   &:focus,
   &:active {

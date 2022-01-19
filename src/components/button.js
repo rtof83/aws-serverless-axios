@@ -1,10 +1,13 @@
 import * as S from '../pages/styled';
 
-const Button = ({ key, fn, children }) => {
+function Button(props) {
     return (
-        <S.ListButton key={key} className="btnList" onClick={fn}>
-            {children}
-        </S.ListButton>
+        <S.Button key={props.key}
+                  type="button"
+                  onClick={props.fn}>
+                      
+            {props.children}
+        </S.Button>
     )
 }
 
