@@ -18,6 +18,9 @@ message - string
 
 ### To initializate must set API URL at file [api.js](https://github.com/rtof83/aws-serverless-axios/blob/main/src/services/api.js)
 
+- `npm i`
+- `npm start`
+
 ...
 
 ### References (to build App, API Gateways, DynamoDB and Lambda): [ramoshtgamagit](https://github.com/ramosht/gamagit) / [gulikholmatova/serverless-app](https://github.com/gulikholmatova/serverless-app)
