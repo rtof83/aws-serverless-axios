@@ -10,7 +10,6 @@ export const URL = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: #D3D3D3;
 `
 
 export const Title = styled.h1`
@@ -27,7 +26,6 @@ export const HomeContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: #D3D3D3;
 `
 
 export const Content = styled.div`

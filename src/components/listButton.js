@@ -4,7 +4,7 @@ function ListButton(props) {
     return (
         <S.ListButton className="btnList"
                       id={props.btnId}
-                      key={props.key}
+                      key={props.btnkey}
                       onClick={props.fn}
                       disabled={props.disabled}>
 
