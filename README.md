@@ -16,7 +16,7 @@ message - string
 
 ...
 
-### To initializate must set API URL at file './src/path.js'
+### To initializate must set API URL at file [api.js](https://github.com/rtof83/aws-serverless-axios/blob/main/src/services/api.js)
 
 ...
 
